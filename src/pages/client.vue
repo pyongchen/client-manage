@@ -19,7 +19,7 @@
 				</el-form-item>
 				<el-form-item style="float: right; margin: 0">
 					<el-input style="width: 180px" size="small" suffix-icon="el-icon-search"
-					  v-model="searchKey" placeholder="输入客户名称搜索"></el-input>
+					  v-model="searchKey" placeholder="输入业务员搜索"></el-input>
 				</el-form-item>
 			</el-form>
 		</div>
@@ -120,7 +120,7 @@
     mounted() {
       this.getData();
       this.getDepartmentList();
-    },
+	    },
 	  watch: {
       searchKey(val) {
         if (!val) {
@@ -129,7 +129,7 @@
         }
         let newList = [];
         this.totalData.forEach(item => {
-          if (item.name.indexOf(val) > -1) newList.push(item);
+          if (item.salesman.indexOf(val) > -1) newList.push(item);
         });
         this.showData = newList;
       }
@@ -153,9 +153,9 @@
         let url = '/cgi/addClient';
         if (this.type == 'edit') url = '/cgi/updateClient';
         axios.post(url, this.item).then(res => {
-          if (res.data.code == 4) {
+          if (res.data.code) {
             this.$message.error(res.data.msg);
-            setTimeout(() => { this.$router.push({path: '/login'}) }, 500);
+            if (res.data.code== 4) setTimeout(() => { this.$router.push({path: '/login'}) }, 500);
           } else {
             this.$message.success(this.type == 'add' ? '添加成功' : '编辑成功');
             this.dialog.addEdit.show = false;

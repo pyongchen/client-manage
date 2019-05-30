@@ -11,6 +11,10 @@
 							<i class="el-icon-switch-button icon"></i>
 							<span>退出登录</span>
 						</div>
+						<div class="user-item" @click="changePass">
+							<i class="el-icon-key icon"></i>
+							<span>修改密码</span>
+						</div>
 					</div>
 					<div class="user">
 						<img :src="user.head">
@@ -19,6 +23,14 @@
 				</el-tooltip>
 			</div>
 		</div>
+		<el-dialog title="更改密码" :visible.sync="showDialog" width="30%">
+			<span>新密码：</span>
+			<el-input type="password" v-model="store.password" style="width: 200px"></el-input>
+			<span slot="footer" class="dialog-footer">
+        <el-button @click="showDialog = false">取 消</el-button>
+        <el-button type="primary" @click="submitChangePass">确 定</el-button>
+      </span>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -32,7 +44,11 @@
           name: '',
           head: 'https://soe-mp-demo-1255701415.cos.ap-guangzhou.myqcloud.com/test/img5.jpg'
         },
-        tabs: []
+        tabs: [],
+	      store: {
+          password: ''
+	      },
+	      showDialog: false
       };
     },
     computed: {
@@ -52,7 +68,19 @@
             this.$router.push({ path: '/login' });
           }, 500);
         });
-      }
+      },
+      changePass() {
+        this.showDialog = true;
+      },
+	    submitChangePass() {
+        axios.post('/user/updatePass', {
+          password: this.store.password,
+        }).then(() => {
+          this.$message.success('更新成功');
+          this.showDialog = false;
+          this.logout();
+        });
+	    }
     }
   };
 </script>
